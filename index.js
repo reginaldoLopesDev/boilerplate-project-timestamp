@@ -1,3 +1,4 @@
+const DateUseCase  = require('./DateUseCase');
 // index.js
 // where your node app starts
 
@@ -24,9 +25,20 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/:date?", function (req, res) {
+  try {
+    const dateParam = req.params.date;
+    const dateParsed = new DateUseCase(dateParam);
+    const utc = dateParsed.getUtcDate();
+    const unix = dateParsed.getUnixDate();
+    res.json({"unix": unix, "utc": utc});
+  } catch (error) {
+    return { error : "Invalid Date" }
+  }
+});
 
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
+var listener = app.listen(4000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
